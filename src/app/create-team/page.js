@@ -3,6 +3,7 @@
 import { useState, useContext } from 'react';
 import { useRouter } from 'next/navigation';
 import { AuthContext } from '../../context/AuthContext';
+import Footer from '@/components/Footer';
 
 export default function CreateTeam() {
   const { user, token } = useContext(AuthContext);
@@ -256,6 +257,7 @@ export default function CreateTeam() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

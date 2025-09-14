@@ -3,6 +3,7 @@
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import Footer from '@/components/Footer';
 
 export default function Home() {
   const { user, loading } = useAuth();
@@ -135,6 +136,8 @@ export default function Home() {
             </div>
           </div>
         </div>
+
+        <Footer />
       </main>
     </div>
   );

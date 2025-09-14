@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
+import Footer from '@/components/Footer';
 
 export default function Teams() {
   const { user } = useAuth();
@@ -223,6 +224,7 @@ export default function Teams() {
           </div>
         )}
       </main>
+      <Footer />
     </div>
   );
 }

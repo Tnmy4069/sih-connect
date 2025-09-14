@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
+import Footer from '@/components/Footer';
 
 export default function Dashboard() {
   const { user, logout, loading: authLoading } = useAuth();
@@ -412,6 +413,7 @@ export default function Dashboard() {
           </div>
         )}
       </main>
+      <Footer />
     </div>
   );
 }

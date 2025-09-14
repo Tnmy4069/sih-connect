@@ -3,6 +3,7 @@
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import Footer from '@/components/Footer';
 
 export default function RegisterChoice() {
   const { user } = useAuth();
@@ -108,6 +109,7 @@ export default function RegisterChoice() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
