@@ -20,10 +20,6 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  college: {
-    type: String,
-    required: true
-  },
   year: {
     type: String,
     required: true
@@ -55,4 +51,9 @@ const UserSchema = new mongoose.Schema({
   }
 });
 
-export default mongoose.models.User || mongoose.model('User', UserSchema);
+// Clear existing model to force reload
+if (mongoose.models.User) {
+  delete mongoose.models.User;
+}
+
+export default mongoose.model('User', UserSchema);

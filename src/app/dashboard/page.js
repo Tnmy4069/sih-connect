@@ -303,7 +303,7 @@ export default function Dashboard() {
                           <span className="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded-full">Leader</span>
                         )}
                         <p className="text-sm text-gray-600">{member.email}</p>
-                        <p className="text-sm text-gray-500">{member.college}</p>
+                        <p className="text-sm text-gray-500">{member.email}</p>
                         <p className="text-sm text-gray-500">{member.year} - {member.branch}</p>
                         <p className="text-sm text-gray-500">Gender: {member.gender}</p>
                       </div>
@@ -337,7 +337,7 @@ export default function Dashboard() {
                         <div className="flex-1">
                           <h4 className="font-medium text-gray-900">{request.user.name}</h4>
                           <p className="text-sm text-gray-600">{request.user.email}</p>
-                          <p className="text-sm text-gray-500">{request.user.college}</p>
+                          <p className="text-sm text-gray-500">{request.user.email}</p>
                           <p className="text-sm text-gray-500">{request.user.year} - {request.user.branch}</p>
                           <p className="text-sm text-gray-500">Gender: {request.user.gender}</p>
                           {request.message && (

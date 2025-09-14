@@ -4,10 +4,12 @@ import { hashPassword, generateToken } from '@/lib/auth';
 
 export async function POST(request) {
   try {
-    const { name, email, password, phone, college, year, branch, gender, skills, lookingForTeam } = await request.json();
+    const { name, email, password, phone, year, branch, gender, skills, lookingForTeam } = await request.json();
+
+    console.log('Registration request data:', { name, email, phone, year, branch, gender, skills: skills?.length, lookingForTeam });
 
     // Validate required fields
-    if (!name || !email || !password || !phone || !college || !year || !branch || !gender) {
+    if (!name || !email || !password || !phone || !year || !branch || !gender) {
       return Response.json({ message: 'All fields are required' }, { status: 400 });
     }
 
@@ -28,7 +30,6 @@ export async function POST(request) {
       email,
       password: hashedPassword,
       phone,
-      college,
       year,
       branch,
       gender,
@@ -47,7 +48,6 @@ export async function POST(request) {
       name: user.name,
       email: user.email,
       phone: user.phone,
-      college: user.college,
       year: user.year,
       branch: user.branch,
       gender: user.gender,
@@ -64,6 +64,14 @@ export async function POST(request) {
 
   } catch (error) {
     console.error('Registration error:', error);
-    return Response.json({ message: 'Internal server error' }, { status: 500 });
+    console.error('Error details:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    });
+    return Response.json({ 
+      message: 'Internal server error',
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Registration failed'
+    }, { status: 500 });
   }
 }

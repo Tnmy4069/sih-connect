@@ -11,8 +11,8 @@ export async function GET(request) {
       requiredMembers: { $gt: 0 },
       isFinalized: false 
     })
-    .populate('leader', 'name email college')
-    .populate('members', 'name email college gender')
+    .populate('leader', 'name email')
+    .populate('members', 'name email gender')
     .sort({ createdAt: -1 });
 
     return Response.json(teams);
@@ -88,8 +88,8 @@ export async function POST(request) {
 
     // Populate and return the team
     const populatedTeam = await Team.findById(team._id)
-      .populate('leader', 'name email college')
-      .populate('members', 'name email college gender');
+      .populate('leader', 'name email')
+      .populate('members', 'name email gender');
 
     return Response.json({
       message: 'Team created successfully',

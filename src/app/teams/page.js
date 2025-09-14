@@ -178,7 +178,7 @@ export default function Teams() {
                   <div>
                     <span className="text-xs font-medium text-gray-500">LEADER</span>
                     <p className="text-sm text-gray-900">{team.leader.name}</p>
-                    <p className="text-xs text-gray-500">{team.leader.college}</p>
+                    <p className="text-xs text-gray-500">{team.leader.name}</p>
                   </div>
 
                   <div>

@@ -34,7 +34,6 @@ export async function POST(request) {
       name: user.name,
       email: user.email,
       phone: user.phone,
-      college: user.college,
       year: user.year,
       branch: user.branch,
       gender: user.gender,

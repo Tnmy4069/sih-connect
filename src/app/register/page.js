@@ -27,6 +27,53 @@ export default function Register() {
     setLoading(true);
     setError('');
 
+    // Validate all required fields
+    const requiredFields = {
+      name: 'Full Name',
+      email: 'Email',
+      password: 'Password',
+      phone: 'Phone Number',
+      year: 'Year',
+      gender: 'Gender',
+      branch: 'Branch/Department'
+    };
+
+    const missingFields = [];
+    for (const [field, label] of Object.entries(requiredFields)) {
+      if (!formData[field] || formData[field].trim() === '') {
+        missingFields.push(label);
+      }
+    }
+
+    if (missingFields.length > 0) {
+      setError(`Please fill in all required fields: ${missingFields.join(', ')}`);
+      setLoading(false);
+      return;
+    }
+
+    // Validate phone number
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!phoneRegex.test(formData.phone.replace(/\s/g, ''))) {
+      setError('Please enter a valid 10-digit phone number');
+      setLoading(false);
+      return;
+    }
+
+    // Validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError('Please enter a valid email address');
+      setLoading(false);
+      return;
+    }
+
+    // Validate password
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      setLoading(false);
+      return;
+    }
+
     const skillsArray = formData.skills.split(',').map(skill => skill.trim()).filter(skill => skill);
 
     const result = await register({
@@ -48,6 +95,11 @@ export default function Register() {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+    
+    // Clear error when user starts typing
+    if (error) {
+      setError('');
+    }
   };
 
   return (
@@ -72,7 +124,7 @@ export default function Register() {
 
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                Full Name
+                Full Name <span className="text-red-500">*</span>
               </label>
               <input
                 id="name"
@@ -87,7 +139,7 @@ export default function Register() {
 
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email
+                Email <span className="text-red-500">*</span>
               </label>
               <input
                 id="email"
@@ -102,7 +154,7 @@ export default function Register() {
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
+                Password <span className="text-red-500">*</span>
               </label>
               <input
                 id="password"
@@ -117,7 +169,7 @@ export default function Register() {
 
             <div>
               <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-                Phone Number
+                Phone Number <span className="text-red-500">*</span>
               </label>
               <input
                 id="phone"
@@ -133,7 +185,7 @@ export default function Register() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label htmlFor="year" className="block text-sm font-medium text-gray-700">
-                  Year
+                  Year <span className="text-red-500">*</span>
                 </label>
                 <select
                   id="year"
@@ -154,7 +206,7 @@ export default function Register() {
 
               <div>
                 <label htmlFor="gender" className="block text-sm font-medium text-gray-700">
-                  Gender
+                  Gender <span className="text-red-500">*</span>
                 </label>
                 <select
                   id="gender"
@@ -174,7 +226,7 @@ export default function Register() {
 
             <div>
               <label htmlFor="branch" className="block text-sm font-medium text-gray-700">
-                Branch/Department
+                Branch/Department <span className="text-red-500">*</span>
               </label>
               <input
                 id="branch"

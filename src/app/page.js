@@ -114,7 +114,7 @@ export default function Home() {
               </svg>
             </div>
             <h3 className="text-xl font-semibold text-gray-900 mb-2">Smart Matching</h3>
-            <p className="text-gray-600">Find individuals looking for teams and match based on skills, college, and preferences.</p>
+            <p className="text-gray-600">Find individuals looking for teams and match based on skills, branch, and preferences.</p>
           </div>
         </div>
 

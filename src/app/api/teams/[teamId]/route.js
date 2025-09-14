@@ -22,9 +22,9 @@ export async function GET(request, { params }) {
     // Await params in Next.js 15
     const { teamId } = await params;
     const team = await Team.findById(teamId)
-      .populate('leader', 'name email college')
-      .populate('members', 'name email college gender phone year branch skills')
-      .populate('joinRequests.user', 'name email college gender phone year branch skills');
+      .populate('leader', 'name email')
+      .populate('members', 'name email gender phone year branch skills')
+      .populate('joinRequests.user', 'name email gender phone year branch skills');
 
     if (!team) {
       return Response.json({ message: 'Team not found' }, { status: 404 });
@@ -101,9 +101,9 @@ export async function PUT(request, { params }) {
 
     // Return updated team
     const updatedTeam = await Team.findById(team._id)
-      .populate('leader', 'name email college')
-      .populate('members', 'name email college gender phone year branch skills')
-      .populate('joinRequests.user', 'name email college gender phone year branch skills');
+      .populate('leader', 'name email')
+      .populate('members', 'name email gender phone year branch skills')
+      .populate('joinRequests.user', 'name email gender phone year branch skills');
 
     return Response.json(updatedTeam);
 
