@@ -45,6 +45,7 @@ export async function POST(request) {
     console.log('Token verified, user ID:', decoded.userId);
 
     const { name, description, problemStatement, techStack, initialMembers } = await request.json();
+    console.log('Team creation request:', { name, description, problemStatement, techStack, initialMembersCount: initialMembers?.length });
 
     if (!name || !description) {
       return Response.json({ message: 'Name and description are required' }, { status: 400 });
@@ -65,26 +66,21 @@ export async function POST(request) {
       leader: decoded.userId,
       members: [decoded.userId], // Leader is always a member
       problemStatement: problemStatement || '',
-      techStack: techStack || []
+      techStack: techStack || [],
+      requiredMembers: 6 - 1 // 6 total minus leader
     });
 
-    // Add initial members if provided
-    if (initialMembers && initialMembers.length > 0) {
-      const validMembers = await User.find({
-        name: { $in: initialMembers },
-        teamId: null
-      });
-
-      team.members.push(...validMembers.map(m => m._id));
-    }
+    // Note: initialMembers are for reference only (names and phones)
+    // They are not added to the team automatically since they need to register first
+    console.log('Initial members received (for reference):', initialMembers);
 
     await team.save();
 
-    // Update all members' teamId
-    await User.updateMany(
-      { _id: { $in: team.members } },
-      { teamId: team._id, lookingForTeam: false }
-    );
+    // Update leader's teamId
+    await User.findByIdAndUpdate(decoded.userId, { 
+      teamId: team._id, 
+      lookingForTeam: false 
+    });
 
     // Populate and return the team
     const populatedTeam = await Team.findById(team._id)
@@ -98,6 +94,14 @@ export async function POST(request) {
 
   } catch (error) {
     console.error('Create team error:', error);
-    return Response.json({ message: 'Internal server error' }, { status: 500 });
+    console.error('Error details:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    });
+    return Response.json({ 
+      message: 'Internal server error',
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Team creation failed'
+    }, { status: 500 });
   }
 }
