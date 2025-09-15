@@ -9,6 +9,7 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('users');
   const [users, setUsers] = useState([]);
   const [teams, setTeams] = useState([]);
+  const [feedback, setFeedback] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [editingUser, setEditingUser] = useState(null);
@@ -43,9 +44,10 @@ export default function AdminDashboard() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [usersRes, teamsRes] = await Promise.all([
+      const [usersRes, teamsRes, feedbackRes] = await Promise.all([
         fetch('/api/admin/users'),
-        fetch('/api/admin/teams')
+        fetch('/api/admin/teams'),
+        fetch('/api/feedback')
       ]);
 
       if (usersRes.ok) {
@@ -56,6 +58,11 @@ export default function AdminDashboard() {
       if (teamsRes.ok) {
         const teamsData = await teamsRes.json();
         setTeams(teamsData);
+      }
+
+      if (feedbackRes.ok) {
+        const feedbackData = await feedbackRes.json();
+        setFeedback(feedbackData);
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -288,7 +295,7 @@ export default function AdminDashboard() {
         )}
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-lg shadow p-6">
             <div className="text-3xl font-bold text-blue-600">{users.length}</div>
             <div className="text-gray-600">Total Users</div>
@@ -300,6 +307,10 @@ export default function AdminDashboard() {
           <div className="bg-white rounded-lg shadow p-6">
             <div className="text-3xl font-bold text-purple-600">{teams.filter(t => t.isFinalized).length}</div>
             <div className="text-gray-600">Finalized Teams</div>
+          </div>
+          <div className="bg-white rounded-lg shadow p-6">
+            <div className="text-3xl font-bold text-orange-600">{feedback.length}</div>
+            <div className="text-gray-600">Feedback Items</div>
           </div>
         </div>
 
@@ -326,6 +337,16 @@ export default function AdminDashboard() {
                 }`}
               >
                 Teams Management
+              </button>
+              <button
+                onClick={() => setActiveTab('feedback')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === 'feedback'
+                    ? 'border-red-500 text-red-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                Feedback & Issues
               </button>
             </nav>
           </div>
@@ -445,6 +466,66 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* Feedback Tab */}
+          {activeTab === 'feedback' && (
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-xl font-semibold">Feedback & Issues</h2>
+                <div className="text-sm text-gray-500">
+                  {feedback.length} total submissions
+                </div>
+              </div>
+
+              {/* Feedback List */}
+              <div className="space-y-4">
+                {feedback.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    No feedback submitted yet
+                  </div>
+                ) : (
+                  feedback.map((item) => (
+                    <div key={item._id || item.id} className="bg-white border rounded-lg p-4">
+                      <div className="flex justify-between items-start mb-3">
+                        <div className="flex items-center space-x-3">
+                          <span className={`px-2 py-1 text-xs rounded-full ${
+                            item.type === 'bug' ? 'bg-red-100 text-red-800' :
+                            item.type === 'feature' ? 'bg-green-100 text-green-800' :
+                            item.type === 'feedback' ? 'bg-blue-100 text-blue-800' :
+                            item.type === 'suggestion' ? 'bg-purple-100 text-purple-800' :
+                            'bg-orange-100 text-orange-800'
+                          }`}>
+                            {item.type.toUpperCase()}
+                          </span>
+                          {item.type === 'bug' && item.priority && (
+                            <span className={`px-2 py-1 text-xs rounded-full ${
+                              item.priority === 'critical' ? 'bg-red-200 text-red-900' :
+                              item.priority === 'high' ? 'bg-orange-200 text-orange-900' :
+                              item.priority === 'medium' ? 'bg-yellow-200 text-yellow-900' :
+                              'bg-gray-200 text-gray-900'
+                            }`}>
+                              {item.priority.toUpperCase()}
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {new Date(item.createdAt).toLocaleDateString()}
+                        </div>
+                      </div>
+                      
+                      <h4 className="font-medium text-gray-900 mb-2">{item.subject}</h4>
+                      <p className="text-gray-600 text-sm mb-3">{item.message}</p>
+                      
+                      <div className="flex justify-between items-center text-xs text-gray-500">
+                        <span>From: {item.name || 'Anonymous'} ({item.email || 'not provided'})</span>
+                        <span>{new Date(item.createdAt).toLocaleTimeString()}</span>
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           )}
